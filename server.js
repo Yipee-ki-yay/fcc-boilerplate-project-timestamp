@@ -32,26 +32,50 @@ var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-app.get('/api/:unixParam([0-9]+)', (req, res) => {
-  const unixParam = Number(req.params.unixParam) / 1000
-  const unix = Number(req.params.unixParam)
-  const utc = moment.unix(unixParam).format('ddd, DD MMM YYYY HH:mm:ss')
+app.get('/api/:date', (req, res) => {
+  const dateStr = req.params.date
+  let date
 
-  res.json({
-    unix,
-    utc
-  })
+  if (!dateStr) {
+    date = new Date()
+  } else {
+    if (!isNaN(dateStr)) {
+      date = new Date(parseInt(dateStr))
+    } else {
+      date = new Date(dateStr)
+    }
+  }
+
+  if (date.toString() === 'Invalid Date') {
+    res.json({err: date.toString()})
+  } else {
+    res.json({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    })
+  }
 })
 
-app.get('/api/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', (req, res) => {
-  console.log('date req.params.date', req.params.date);
+// app.get('/api/:unixParam([0-9]+)', (req, res) => {
+//   const unixParam = Number(req.params.unixParam) / 1000
+//   const unix = Number(req.params.unixParam)
+//   const utc = moment.unix(unixParam).format('ddd, DD MMM YYYY HH:mm:ss')
 
-  const date = req.params.date
-  const unix = Number(moment(date).format('x'))
-  const utc = moment(date).format('ddd, DD MMM YYYY HH:mm:ss')
+//   res.json({
+//     unix,
+//     utc
+//   })
+// })
 
-  res.json({
-    unix,
-    utc
-  })
-})
+// app.get('/api/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', (req, res) => {
+//   console.log('date req.params.date', req.params.date);
+
+//   const date = req.params.date
+//   const unix = Number(moment(date).format('x'))
+//   const utc = moment(date).format('ddd, DD MMM YYYY HH:mm:ss')
+
+//   res.json({
+//     unix,
+//     utc
+//   })
+// })
