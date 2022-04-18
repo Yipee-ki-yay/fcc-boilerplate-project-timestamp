@@ -32,7 +32,7 @@ var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-app.get('/api/:date', (req, res) => {
+app.get('/api/:date?', (req, res) => {
   const dateStr = req.params.date
   let date
 
@@ -47,7 +47,7 @@ app.get('/api/:date', (req, res) => {
   }
 
   if (date.toString() === 'Invalid Date') {
-    res.json({err: date.toString()})
+    res.json({error: date.toString()})
   } else {
     res.json({
       unix: date.getTime(),
